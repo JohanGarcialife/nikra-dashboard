@@ -1,15 +1,18 @@
 @import "tailwindcss";
 
+@config "../../tailwind.config.js";
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-montserrat);
   --font-mono: var(--font-geist-mono);
+  --color-primary: #133D74;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +25,12 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* Añadir esto a tu archivo CSS global (p. ej., globals.css) */
+.pdf-viewer-container {
+  /* Establece la altura a un valor fijo o una unidad de viewport */
+  min-height: 500px; 
+  height: 85vh; /* 85% de la altura de la ventana visible */
 }
