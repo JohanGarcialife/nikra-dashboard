@@ -84,10 +84,10 @@ export default function Sidebar({ isMobileOpen = false, toggleMobile = () => {} 
         aria-label="Navegación principal"
       >
         {/* Logo y botón de cerrar */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center p-6 border-b border-gray-200">
+          <div className="flex items-center justify-center gap-2">
             <Image
-              src="/Logo.png"
+              src="/CCA-800X600-(2).png"
               alt="CCA Ceuta Logo"
               width={120}
               height={40}
