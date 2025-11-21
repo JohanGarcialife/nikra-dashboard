@@ -7,6 +7,7 @@ import { HeroUIProvider } from "@heroui/system";
 import { useState } from "react";
 import { Menu } from "lucide-react";
 import Sidebar from "./_components/Sidebar";
+import Image from "next/image";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -45,11 +46,19 @@ export default function MainLayout({ children }) {
 
               {/* Área de contenido con scroll */}
               <main className="flex-1 overflow-y-auto overflow-x-hidden">
-                <div className="p-4 lg:p-8">
+                <div className="p-4 lg:p-8 absolute z-20">
                   {children}
                 </div>
               </main>
             </div>
+
+           <Image
+                         src="/Group786.png"
+                         alt="Fondo decorativo"
+                         fill
+                         className="object-fill absolute bottom-0 left-0 z-10 oselect-none pointer-events-none"
+                         priority
+                       />
           </div>
         </HeroUIProvider>
       </body>
