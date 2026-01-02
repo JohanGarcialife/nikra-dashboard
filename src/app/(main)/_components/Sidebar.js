@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
-import { BarChart3, Users, UserCog, FolderOpen, Menu, X, LogOut } from 'lucide-react';
+import { BarChart3, Users, UserCog, FolderOpen, Ticket, X, LogOut } from 'lucide-react';
 import useAuthStore from '@/store/auth';
 import apiClient from '@/lib/axios';
 
@@ -58,6 +58,12 @@ export default function Sidebar({ isMobileOpen = false, toggleMobile = () => {} 
       label: 'Campañas',
       icon: FolderOpen,
       href: '/campanas',
+    },
+     {
+      id: 'tickets',
+      label: 'Tickets',
+      icon: Ticket,
+      href: '/tickets',
     },
   ];
 
