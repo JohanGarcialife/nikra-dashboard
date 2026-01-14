@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { 
-  Search, 
-  ChevronDown, 
-  Pencil, 
-  Trash2, 
-  ChevronLeft, 
-  ChevronRight 
+import {
+  Search,
+  ChevronDown,
+  Pencil,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { getAssociates } from "@/lib/associatesService";
 import AnadirAsociado from "./_components/AnadirAsociado";
@@ -35,8 +35,8 @@ export default function AsociadosDashboard() {
       setTotalPages(response.pagination.totalPages);
       setTotalAssociates(response.pagination.total);
     } catch (err) {
-      console.error('Error al cargar asociados:', err);
-      setError('Error al cargar los asociados. Por favor, intenta de nuevo.');
+      console.error("Error al cargar asociados:", err);
+      setError("Error al cargar los asociados. Por favor, intenta de nuevo.");
       setAssociates([]);
     } finally {
       setLoading(false);
@@ -51,12 +51,12 @@ export default function AsociadosDashboard() {
   useEffect(() => {
     const isModalOpen = isCreateModalOpen || editingAssociateId !== null;
     if (isModalOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isCreateModalOpen, editingAssociateId]);
 
@@ -74,25 +74,23 @@ export default function AsociadosDashboard() {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handleEditClick = (id) => {
     setEditingAssociateId(id);
   };
-  
+
   const getStatusColor = (status) => {
     return status ? "text-green-500" : "text-orange-400";
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 relative overflow-hidden p-8 font-sans">
-      
+    <div className="w-full lg:h-full flex flex-col font-sans">
       {isCreateModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex justify-center items-center">
-          <AnadirAsociado 
-            onClose={() => setIsCreateModalOpen(false)} 
+          <AnadirAsociado
+            onClose={() => setIsCreateModalOpen(false)}
             onSubmitSuccess={loadAssociates}
           />
         </div>
@@ -111,17 +109,18 @@ export default function AsociadosDashboard() {
       <div className="absolute top-0 right-0 w-2/3 h-96 bg-blue-100 rounded-bl-full opacity-50 -z-10 translate-x-1/4 -translate-y-1/2 pointer-events-none"></div>
       <div className="absolute top-20 right-40 w-20 h-20 bg-white rounded-full opacity-80 -z-10 pointer-events-none"></div>
 
-      <h1 className="text-4xl font-bold text-[#1e2a5e] mb-10 mt-4">Asociados</h1>
+      <h1 className="text-4xl font-bold text-[#1e2a5e] mb-6 flex-shrink-0">
+        Asociados
+      </h1>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 max-w-[1400px] mx-auto">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex-shrink-0">
           {error}
         </div>
       )}
 
-      <div className="bg-white rounded-3xl shadow-xl p-8 max-w-[1400px] mx-auto min-h-[800px] flex flex-col">
-        
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+      <div className="bg-white rounded-3xl shadow-xl p-8 flex flex-col lg:flex-1 lg:min-h-0 min-h-[600px] max-w-full">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 flex-shrink-0">
           <div className="flex gap-4 w-full md:w-auto">
             <div className="relative group">
               <button className="flex items-center justify-between w-40 px-4 py-2.5 text-blue-900 bg-white border border-gray-200 rounded-lg hover:border-blue-400 transition-colors">
@@ -142,7 +141,7 @@ export default function AsociadosDashboard() {
               />
             </div>
           </div>
-          <button 
+          <button
             onClick={() => setIsCreateModalOpen(true)}
             className="w-full md:w-auto px-6 py-2.5 bg-[#004e92] hover:bg-[#003b70] text-white font-medium rounded-lg shadow-md transition-colors"
           >
@@ -150,7 +149,7 @@ export default function AsociadosDashboard() {
           </button>
         </div>
 
-        <div className="hidden md:grid grid-cols-12 gap-4 px-4 mb-4 text-[#3b5998] font-medium text-sm">
+        <div className="hidden md:grid grid-cols-12 gap-4 px-4 mb-4 text-[#3b5998] font-medium text-sm flex-shrink-0">
           <div className="col-span-1">Estado</div>
           <div className="col-span-3">Nombre del comercio</div>
           <div className="col-span-2">Dirección</div>
@@ -161,12 +160,17 @@ export default function AsociadosDashboard() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
           {loading ? (
-            <div className="text-center py-10 text-gray-500">Cargando asociados...</div>
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <span className="ml-3 text-gray-500">Cargando asociados...</span>
+            </div>
           ) : filteredAssociates.length === 0 ? (
             <div className="text-center py-10 text-gray-500">
-              {searchQuery ? 'No se encontraron asociados' : 'No hay asociados disponibles'}
+              {searchQuery
+                ? "No se encontraron asociados"
+                : "No hay asociados disponibles"}
             </div>
           ) : (
             filteredAssociates.map((item) => (
@@ -174,14 +178,24 @@ export default function AsociadosDashboard() {
                 key={item.id}
                 className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center px-4 py-5 bg-white border border-gray-100 rounded-xl hover:shadow-md transition-shadow"
               >
-                <div className={`col-span-1 font-medium ${getStatusColor(item.activo)}`}>
+                <div
+                  className={`col-span-1 font-medium ${getStatusColor(
+                    item.activo
+                  )}`}
+                >
                   {item.activo ? "Activo" : "Bloqueado"}
                 </div>
-                <div className="col-span-3 text-[#1e2a5e] font-medium text-sm uppercase">{item.nombre}</div>
-                <div className="col-span-2 text-[#1e2a5e] text-sm">{item.direccion || 'NAN'}</div>
-                <div className="col-span-4 text-[#1e2a5e] text-sm truncate">{item.telefono || 'NAN'}</div>
+                <div className="col-span-3 text-[#1e2a5e] font-medium text-sm uppercase">
+                  {item.nombre}
+                </div>
+                <div className="col-span-2 text-[#1e2a5e] text-sm">
+                  {item.direccion || "NAN"}
+                </div>
+                <div className="col-span-4 text-[#1e2a5e] text-sm truncate">
+                  {item.telefono || "NAN"}
+                </div>
                 <div className="col-span-2 flex justify-end gap-3">
-                  <button 
+                  <button
                     onClick={() => handleEditClick(item.id)}
                     className="p-2 bg-blue-100/50 hover:bg-blue-100 rounded-full text-[#1e2a5e] transition-colors"
                   >
@@ -197,9 +211,9 @@ export default function AsociadosDashboard() {
         </div>
 
         {totalPages > 1 && (
-          <div className="mt-auto pt-8 flex justify-center items-center gap-4 text-blue-900 text-sm">
+          <div className="mt-6 pt-6 border-t border-gray-200 flex justify-center items-center gap-4 text-blue-900 text-sm flex-shrink-0">
             <span>Page</span>
-            <button 
+            <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
               className="p-1 hover:bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
@@ -209,7 +223,7 @@ export default function AsociadosDashboard() {
             <div className="w-8 h-8 flex items-center justify-center bg-[#004e92] text-white rounded-full font-medium">
               {currentPage}
             </div>
-            <button 
+            <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
               className="p-1 hover:bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
@@ -222,11 +236,11 @@ export default function AsociadosDashboard() {
               <div className="w-8 h-[1px] bg-blue-200"></div>
             </div>
             <span className="ml-4 text-sm text-gray-600">
-              {totalAssociates > 0 ? `Total: ${totalAssociates} asociados` : ''}
+              {totalAssociates > 0 ? `Total: ${totalAssociates} asociados` : ""}
             </span>
           </div>
         )}
       </div>
     </div>
   );
-};
+}

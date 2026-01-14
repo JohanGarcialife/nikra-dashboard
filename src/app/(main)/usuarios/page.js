@@ -1,9 +1,9 @@
 'use client'
 
 import { deleteUser, getActiveUsers, getUsers } from '@/lib/usersServices';
-import { UserCog, Plus, Search, Shield, Users } from 'lucide-react';
+import { UserCog, Search, Shield, Users, Download, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { Eye, Trash2 } from "lucide-react";
+import ExportParticipantesModal from './_components/ExportParticipantesModal';
 
 const ITEMS_PER_PAGE = 30;
 
@@ -13,12 +13,13 @@ export default function UsuariosPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalUsers, setTotalUsers] = useState(0);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE);
 
   // Cargar usuarios del backend
   const loadUsers = async () => {
@@ -73,7 +74,6 @@ export default function UsuariosPage() {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -144,15 +144,15 @@ export default function UsuariosPage() {
 
 
   return (
-    <div className="w-full">
+    <div className="w-full lg:h-full flex flex-col">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 flex-shrink-0">
         <h1 className="text-3xl font-bold text-primary mb-2">Usuarios</h1>
         <p className="text-gray-600">Administra los usuarios del sistema y sus permisos</p>
       </div>
 
       {/* Acciones */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row gap-4 mb-6 flex-shrink-0">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
@@ -167,10 +167,17 @@ export default function UsuariosPage() {
           <Search className="w-5 h-5" />
          Buscar Usuario
         </button>
+        <button 
+          onClick={() => setIsExportModalOpen(true)} 
+          className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transition-colors font-medium"
+        >
+          <Download className="w-5 h-5" />
+          Exportar Participantes
+        </button>
       </div>
 
       {/* Grid de estadísticas rápidas */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 flex-shrink-0">
         <div className="bg-white rounded-2xl shadow-md p-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="bg-blue-50 p-3 rounded-xl">
@@ -207,11 +214,16 @@ export default function UsuariosPage() {
       </div>
 
       {/* Contenido placeholder */}
-      <div className="bg-white rounded-2xl shadow-md p-12">
-        {users.length > 0 ?  <>
+      <div className="bg-white rounded-2xl shadow-md flex flex-col lg:flex-1 lg:min-h-0 min-h-[600px]">
+        {loading ? (
+          <div className="flex items-center justify-center py-12 flex-1">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="ml-3 text-gray-500">Cargando usuarios...</span>
+          </div>
+        ) : users.length > 0 ?  <>
         
           {/* Tabla de campañas */}
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto lg:flex-1 lg:min-h-0 lg:overflow-y-auto p-6">
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
@@ -236,16 +248,7 @@ export default function UsuariosPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {loading ? (
-                  <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center">
-                      <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                        <span className="ml-3 text-gray-500">Cargando usuarios...</span>
-                      </div>
-                    </td>
-                  </tr>
-                ) : filteredUsers.length === 0 ? (
+                {filteredUsers.length === 0 ? (
                   <tr>
                     <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
                       {searchQuery ? 'No se encontraron usuarios con ese nombre' : 'No hay usuarios disponibles'}
@@ -302,7 +305,7 @@ export default function UsuariosPage() {
   
           {/* Paginación */}
           {totalPages > 1 && (
-            <div className="border-t border-gray-200 px-6 py-3 flex items-center justify-center gap-4">
+            <div className="border-t border-gray-200 px-6 py-3 flex items-center justify-center gap-4 flex-shrink-0">
               <span className="text-sm text-gray-600">Page</span>
   
               {/* Botón anterior */}
@@ -364,6 +367,12 @@ export default function UsuariosPage() {
           </p>
         </div>}
       </div>
+
+      {/* Modal de Exportar Participantes */}
+      <ExportParticipantesModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+      />
     </div>
   );
 }

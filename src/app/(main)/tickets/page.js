@@ -79,7 +79,6 @@ export default function TicketsPage() {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -143,19 +142,19 @@ export default function TicketsPage() {
   };
 
   return (
-    <div className="w-full">
-      <div className="mb-6">
+    <div className="w-full lg:h-full flex flex-col">
+      <div className="mb-6 flex-shrink-0">
         <h1 className="text-3xl font-bold text-primary">Tickets</h1>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex-shrink-0">
           {error}
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-gray-200">
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col lg:flex-1 lg:min-h-0">
+        <div className="p-4 border-b border-gray-200 flex-shrink-0">
           <SearchBar
             placeholder="Buscar ticket por número"
             value={searchQuery}
@@ -163,7 +162,7 @@ export default function TicketsPage() {
           />
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -231,7 +230,7 @@ export default function TicketsPage() {
         </div>
 
         {totalPages > 1 && (
-          <div className="border-t border-gray-200 px-6 py-3 flex items-center justify-center gap-4">
+          <div className="border-t border-gray-200 px-6 py-3 flex items-center justify-center gap-4 flex-shrink-0">
             <span className="text-sm text-gray-600">Página</span>
             <button
               onClick={() => handlePageChange(currentPage - 1)}

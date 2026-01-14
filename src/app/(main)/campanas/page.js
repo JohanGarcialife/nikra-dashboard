@@ -35,20 +35,23 @@ export default function CampanasPage() {
       setLoading(true);
       setError(null);
       const data = await getCampaigns(currentPage, itemsPerPage);
-      
+
       // Formatear campañas con estado y fechas
       const formattedCampaigns = data.campaigns.map((campaign) => ({
         ...campaign,
         estado: calculateCampaignStatus(campaign),
-        fechas: formatCampaignDateRange(campaign.fechaInicio, campaign.fechaFin),
+        fechas: formatCampaignDateRange(
+          campaign.fechaInicio,
+          campaign.fechaFin
+        ),
       }));
-      
+
       setCampaigns(formattedCampaigns);
       setTotalPages(data.pagination.totalPages);
       setTotalCampaigns(data.pagination.total);
     } catch (err) {
-      console.error('Error al cargar campañas:', err);
-      setError('Error al cargar las campañas. Por favor, intenta de nuevo.');
+      console.error("Error al cargar campañas:", err);
+      setError("Error al cargar las campañas. Por favor, intenta de nuevo.");
       setCampaigns([]);
     } finally {
       setLoading(false);
@@ -77,7 +80,6 @@ export default function CampanasPage() {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -110,10 +112,10 @@ export default function CampanasPage() {
         await deleteCampaign(campaignId);
         // Recargar campañas después de eliminar
         await loadCampaigns();
-        alert('Campaña eliminada exitosamente');
+        alert("Campaña eliminada exitosamente");
       } catch (error) {
-        console.error('Error al eliminar campaña:', error);
-        alert('Error al eliminar la campaña. Por favor, intenta de nuevo.');
+        console.error("Error al eliminar campaña:", error);
+        alert("Error al eliminar la campaña. Por favor, intenta de nuevo.");
       }
     }
   };
@@ -127,7 +129,7 @@ export default function CampanasPage() {
       // 2. Crear la campaña con la URL de la imagen
       const campaignData = {
         nombre: formData.nombre,
-        descripcion: formData.descripcion || '',
+        descripcion: formData.descripcion || "",
         imagenUrl: filename, // Solo el filename, el backend construirá la URL
         isActive: formData.isActive !== undefined ? formData.isActive : true,
         fechaInicio: new Date(formData.fechaInicio).toISOString(),
@@ -135,35 +137,35 @@ export default function CampanasPage() {
       };
 
       await createCampaign(campaignData);
-      
+
       // 3. Recargar campañas después de crear
       await loadCampaigns();
       setIsModalOpen(false);
-      alert('Campaña creada exitosamente');
+      alert("Campaña creada exitosamente");
     } catch (error) {
-      console.error('Error al crear campaña:', error);
+      console.error("Error al crear campaña:", error);
       throw error; // Re-lanzar el error para que el modal lo maneje
     }
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full lg:h-full flex flex-col">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 flex-shrink-0">
         <h1 className="text-3xl font-bold text-primary">Campañas</h1>
       </div>
 
       {/* Mensaje de error */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex-shrink-0">
           {error}
         </div>
       )}
 
       {/* Contenedor principal - Tarjeta blanca flotante */}
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col lg:flex-1 lg:min-h-0 min-h-[600px]">
         {/* Barra de búsqueda y botón crear dentro del contenedor */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-b border-gray-200">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-b border-gray-200 flex-shrink-0">
           <SearchBar
             placeholder="Buscar campaña"
             value={searchQuery}
@@ -178,7 +180,7 @@ export default function CampanasPage() {
         </div>
 
         {/* Tabla de campañas */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -208,14 +210,21 @@ export default function CampanasPage() {
                   <td colSpan="6" className="px-6 py-12 text-center">
                     <div className="flex items-center justify-center">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                      <span className="ml-3 text-gray-500">Cargando campañas...</span>
+                      <span className="ml-3 text-gray-500">
+                        Cargando campañas...
+                      </span>
                     </div>
                   </td>
                 </tr>
               ) : filteredCampaigns.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
-                    {searchQuery ? 'No se encontraron campañas con ese nombre' : 'No hay campañas disponibles'}
+                  <td
+                    colSpan="6"
+                    className="px-6 py-8 text-center text-gray-500"
+                  >
+                    {searchQuery
+                      ? "No se encontraron campañas con ese nombre"
+                      : "No hay campañas disponibles"}
                   </td>
                 </tr>
               ) : (
@@ -272,7 +281,7 @@ export default function CampanasPage() {
 
         {/* Paginación */}
         {totalPages > 1 && (
-          <div className="border-t border-gray-200 px-6 py-3 flex items-center justify-center gap-4">
+          <div className="border-t border-gray-200 px-6 py-3 flex items-center justify-center gap-4 flex-shrink-0">
             <span className="text-sm text-gray-600">Page</span>
 
             {/* Botón anterior */}
@@ -310,10 +319,10 @@ export default function CampanasPage() {
               <option value="50">50</option>
               <option value="100">100</option>
             </select>
-            
+
             {/* Info de paginación */}
             <span className="ml-4 text-sm text-gray-600">
-              {totalCampaigns > 0 ? `Total: ${totalCampaigns} campañas` : ''}
+              {totalCampaigns > 0 ? `Total: ${totalCampaigns} campañas` : ""}
             </span>
           </div>
         )}
