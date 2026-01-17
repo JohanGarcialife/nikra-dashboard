@@ -26,7 +26,10 @@ export default function MainLayout({ children }) {
 
   return (
     <html lang="es">
-      <body className={`${montserrat.variable} antialiased`}>
+      <body
+        className={`${montserrat.variable} antialiased`}
+        suppressHydrationWarning
+      >
         <HeroUIProvider>
           <Toaster richColors position="top-right" />
           {/* Imagen de fondo fija - fuera del contenedor para que funcione correctamente */}

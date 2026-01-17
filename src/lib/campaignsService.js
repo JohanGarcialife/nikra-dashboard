@@ -38,6 +38,61 @@ export const getActiveCampaigns = async () => {
 };
 
 /**
+ * Obtener todas las campañas (activas e inactivas) con paginación
+ * Esta función carga todas las campañas haciendo múltiples peticiones si es necesario
+ * @param {Object} options - Opciones de búsqueda
+ * @param {string} options.nombre - Búsqueda por nombre de campaña (opcional)
+ * @param {boolean} options.isActive - Filtrar por estado activo (opcional)
+ * @param {number} options.limit - Número de elementos por página (default: 100)
+ * @returns {Promise} - Array completo de todas las campañas
+ */
+export const getAllCampaigns = async (options = {}) => {
+  try {
+    const { nombre, isActive, limit = 100 } = options;
+    const allCampaigns = [];
+    let currentPage = 1;
+    let hasMorePages = true;
+
+    // Cargar todas las páginas
+    while (hasMorePages) {
+      const params = {
+        page: currentPage,
+        limit: limit
+      };
+
+      // Agregar filtros opcionales
+      if (nombre && nombre.trim() !== '') {
+        params.nombre = nombre.trim();
+      }
+      if (isActive !== undefined && isActive !== null) {
+        params.isActive = isActive;
+      }
+
+      const response = await apiClient.get('/api/campaigns', { params });
+      const data = response.data;
+
+      // Agregar campañas de esta página
+      if (data.campaigns && Array.isArray(data.campaigns)) {
+        allCampaigns.push(...data.campaigns);
+      }
+
+      // Verificar si hay más páginas
+      if (data.pagination) {
+        hasMorePages = currentPage < data.pagination.totalPages;
+        currentPage++;
+      } else {
+        hasMorePages = false;
+      }
+    }
+
+    return allCampaigns;
+  } catch (error) {
+    console.error('Error al obtener todas las campañas:', error);
+    throw error;
+  }
+};
+
+/**
  * Obtener una campaña por su ID
  * @param {string} id - ID de la campaña
  * @returns {Promise} - Datos de la campaña

@@ -30,7 +30,17 @@ export default function MetricCard({
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-bold text-primary">{value}</span>
             {change && (
-              <span className="text-sm font-medium text-green-600">{change}</span>
+              <span
+                className={`text-sm font-medium ${
+                  change.startsWith("-")
+                    ? "text-red-600"
+                    : change.startsWith("+")
+                    ? "text-green-600"
+                    : "text-gray-600"
+                }`}
+              >
+                {change}
+              </span>
             )}
           </div>
         </div>
